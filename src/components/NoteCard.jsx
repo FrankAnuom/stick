@@ -50,10 +50,17 @@ const NoteCard = ({ note }) => {
         startPos.x = clientX;
         startPos.y = clientY;
 
-        setPosition((prev) => ({
-            x: prev.x + moveX,
-            y: prev.y + moveY,
-        }));
+        setPosition((prev) => {
+            const screenWidth = window.innerWidth;
+            const screenHeight = window.innerHeight;
+            const cardWidth = cardRef.current.offsetWidth;
+            const cardHeight = cardRef.current.offsetHeight;
+
+            return {
+                x: Math.max(0, Math.min(prev.x + moveX, screenWidth - cardWidth)),
+                y: Math.max(0, Math.min(prev.y + moveY, screenHeight - cardHeight)),
+            };
+        });
     };
 
     const stopDrag = () => {
