@@ -1,6 +1,8 @@
 import { useRef, useEffect, useState } from "react";
 import Trash from "../icons/Trash";
 
+let globalZIndex = 1; // Global counter to track zIndex
+
 const NoteCard = ({ note }) => {
     const cardRef = useRef(null);
     const textAreaRef = useRef(null);
@@ -8,11 +10,16 @@ const NoteCard = ({ note }) => {
     const [position, setPosition] = useState(JSON.parse(note.position));
     const colors = JSON.parse(note.colors);
     const body = JSON.parse(note.body);
+    const [zIndex, setZIndex] = useState(globalZIndex);
 
     let startPos = { x: 0, y: 0 };
 
     useEffect(() => {
+        if (textAreaRef.current) {
+            textAreaRef.current.focus(); // Autofocus on mount
+        }
         autoGrow();
+        bringToFront();
     }, []);
 
     const autoGrow = () => {
@@ -22,7 +29,14 @@ const NoteCard = ({ note }) => {
         }
     };
 
+    const bringToFront = () => {
+        globalZIndex += 1; // Increase global zIndex
+        setZIndex(globalZIndex); // Set the highest zIndex for this card
+    };
+
     const startDrag = (e) => {
+        bringToFront(); // Bring the card to the front when dragging
+        
         const clientX = e.touches ? e.touches[0].clientX : e.clientX;
         const clientY = e.touches ? e.touches[0].clientY : e.clientY;
 
@@ -79,7 +93,10 @@ const NoteCard = ({ note }) => {
                 left: `${position.x}px`,
                 top: `${position.y}px`,
                 backgroundColor: colors.colorBody,
+                zIndex: zIndex,
+                position: "absolute"
             }}
+            onMouseDown={bringToFront} // Bring card to front when clicked
         >
             <div
                 onMouseDown={startDrag} // For desktops/laptops
@@ -96,6 +113,7 @@ const NoteCard = ({ note }) => {
                     style={{ color: colors.colorText }}
                     defaultValue={body}
                     onInput={autoGrow}
+                    onFocus={bringToFront} // Bring to front when typing
                 ></textarea>
             </div>
         </div>
