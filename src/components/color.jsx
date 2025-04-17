@@ -39,4 +39,4 @@ const changeColor = () => {
   )
 }
 
-export default color
+export default Color
