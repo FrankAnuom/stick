@@ -1,11 +1,11 @@
 import { useRef, useEffect, useState } from "react";
 import { db } from "../appwrite/databases";
 import DeleteButton from "./DeleteButton";
-// import Trash from "../icons/Trash";
 import { bodyParser, setNewOffset } from "../utils";
 import Spinner from "../icons/spinner";
 import { useContext } from "react";
 import { NoteContext } from "../context/NoteContext";
+import { getDeviceId } from "../utils"; // <-- Ensure deviceId is available
 
 let globalZIndex = 1; // Global counter to track zIndex
 
@@ -129,7 +129,7 @@ const NoteCard = ({ note }) => {
 
   // Function to save data (position or body) to the database
   const saveData = async (key, value) => {
-    const payload = { [key]: JSON.stringify(value) };
+    const payload = { [key]: JSON.stringify(value), deviceId: getDeviceId() };
 
     try {
       await db.notes.update(note.$id, payload);

@@ -1,8 +1,21 @@
-import { databases, collections } from "./config";
-import { ID } from "appwrite";
- 
+import { Client, Databases, Query } from "appwrite"; // Import Query here
+
+const client = new Client()
+  .setEndpoint(import.meta.env.VITE_ENDPOINT)
+  .setProject(import.meta.env.VITE_PROJECT_ID);
+
+const databases = new Databases(client);
+
+const collections = [
+  {
+      name: "notes",
+      id: import.meta.env.VITE_COLLECTION_NOTES_ID,
+      dbId: import.meta.env.VITE_DATABASE_ID
+  },
+];
+
 const db = {};
- 
+
 collections.forEach((collection) => {
     db[collection.name] = {
         create: async (payload, id = ID.unique()) => {
@@ -39,10 +52,10 @@ collections.forEach((collection) => {
             return await databases.listDocuments(
                 collection.dbId,
                 collection.id,
-                queries
+                queries // Pass queries for filtering
             );
         },
     };
 });
- 
+
 export { db };
