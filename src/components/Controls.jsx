@@ -1,6 +1,6 @@
 import React from 'react'
 import AddButton from './AddButton'
-import Color from './color'
+import color from './color'
 import colors from '../assets/colors.json'
 
 const Controls = () => {
